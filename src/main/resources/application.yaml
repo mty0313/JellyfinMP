@@ -1,0 +1,16 @@
+server:
+  port: 8089
+  servlet:
+    context-path: /jellyfinmp
+spring:
+  application:
+    name: jellyfinmp
+  profiles:
+    active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+feign:
+  httpclient:
+    sslcontext:
+      enabled: true
