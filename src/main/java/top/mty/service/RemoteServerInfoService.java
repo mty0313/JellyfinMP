@@ -13,6 +13,7 @@ import top.mty.entity.RemoteServerInfo;
 import top.mty.mapper.RemoteServerInfoMapper;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +41,9 @@ public class RemoteServerInfoService extends ServiceImpl<RemoteServerInfoMapper,
     Assert.notEmpty(initWeixinMPAppId, "initWeixinMPAppId");
     Assert.notEmpty(initWeixinMPAppSecret, "initWeixinMPAppSecret");
     Assert.notEmpty(initWeixinMPServerUrl, "initWeixinMPServerUrl");
-    remoteServerInfoMapper.delete(new QueryWrapper<>());
+    QueryWrapper<RemoteServerInfo> wrapper = new QueryWrapper<>();
+    wrapper.in("app_id", Arrays.asList(CustomAppId.Jellyfin.name(), CustomAppId.WeixinMP.name()));
+    remoteServerInfoMapper.delete(wrapper);
     RemoteServerInfo jellyfin = new RemoteServerInfo(CustomAppId.Jellyfin, initJellyfinToken, initJellyfinServerUrl);
     insertServerInfo(jellyfin);
     RemoteServerInfo weixinMP = new RemoteServerInfo(CustomAppId.WeixinMP,

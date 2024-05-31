@@ -32,7 +32,7 @@ public class WeixinMPDraftCreateRequest {
      * 作者
      */
     @JsonProperty("author")
-    private String author = "PlainServer";
+    private String author;
     /**
      * 图文消息的摘要，仅有单图文消息才有摘要，多图文此处为空。如果本字段为没有填写，则默认抓取正文前54个字。
      */
@@ -47,7 +47,7 @@ public class WeixinMPDraftCreateRequest {
      * 图文消息的原文地址，即点击“阅读原文”后的URL
      */
     @JsonProperty("content_source_url")
-    private String contentSourceUrl;
+    private String contentSourceUrl = "https://github.com/mty0313/JellyfinMP";
     /**
      * 图文消息的封面图片素材id（必须是永久MediaID）
      */
@@ -83,7 +83,7 @@ public class WeixinMPDraftCreateRequest {
     public ArticlesDTO defaultJellyfinItemAddArticle() {
       ArticlesDTO result = new ArticlesDTO();
       result.setTitle("Jellyfin " + DateUtil.toStandardYMD(new Date()) + " 更新");
-      result.setAuthor("plain-server");
+      result.setAuthor("JellyfinMP");
       return result;
     }
   }

@@ -20,6 +20,7 @@ import top.mty.remote.JellyfinFullControlApiClient;
 import top.mty.remote.WeixinMPClient;
 import top.mty.remote.param.*;
 import top.mty.utils.FileUtil;
+import top.mty.utils.GuavaCache;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,8 +43,6 @@ public class JellyfinWebhookService extends ServiceImpl<JellyfinWebhookEntityMap
   private String defaultActorImg;
   @Value("${weixin.mp.actorFetchMaxSize:10}")
   private Integer actorFetchMaxSize;
-  @Autowired
-  private RedisService redisService;
   @Value("${jellyfin.adminId}")
   private String jellyfinAdminId;
 
@@ -63,14 +62,6 @@ public class JellyfinWebhookService extends ServiceImpl<JellyfinWebhookEntityMap
     return mapper.selectList(wrapper);
   }
 
-  public JellyfinWebhookEntity getSeriesByEpisode(String seriesName) {
-    QueryWrapper<JellyfinWebhookEntity> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("item_type", JellyfinWebhookProperties.ITEM_TYPE_SERIES);
-    queryWrapper.eq("name", seriesName);
-    List<JellyfinWebhookEntity> result = mapper.selectList(queryWrapper);
-    return !result.isEmpty() ? result.get(0) : null;
-  }
-
   public void updateBatchProcessedByUuids(List<String> uuids) {
     QueryWrapper<JellyfinWebhookEntity> queryWrapper = new QueryWrapper<>();
     queryWrapper.in("uuid", uuids);
@@ -83,23 +74,23 @@ public class JellyfinWebhookService extends ServiceImpl<JellyfinWebhookEntityMap
 
   public String uploadItemImage2WeixinMP(String localPath) {
     if (StringUtils.hasText(localPath)) {
-      String redisCachedKey = null;
+      String cachedKey = null;
       try {
         String[] splitPath = localPath.split("\\.")[0].split("/");
-        redisCachedKey = splitPath[splitPath.length - 1];
+        cachedKey = splitPath[splitPath.length - 1];
       } catch (Exception e) {
         log.error("uploadItemImage2WeixinMP localPath abnormal : {}", localPath);
         return null;
       }
-      if (!StringUtils.hasText(redisCachedKey)) {
+      if (!StringUtils.hasText(cachedKey)) {
         log.error("uploadItemImage2WeixinMP localPath abnormal : {}", localPath);
         return null;
       }
       MultipartFile file = FileUtil.convert(localPath);
-      // 检查图片是否已经在redis
-      String cachedWeixinImageUrl = redisService.getValue(redisCachedKey);
+      // 检查图片是否已经在缓存
+      String cachedWeixinImageUrl = (String) GuavaCache.get(cachedKey);
       if (StringUtils.hasText(cachedWeixinImageUrl)) {
-        log.info("缓存命中: {}", redisCachedKey);
+        log.debug("缓存命中: {}", cachedKey);
         // 删除本地文件
         if (null != file) {
           FileUtil.deleteFile(localPath);
@@ -112,7 +103,7 @@ public class JellyfinWebhookService extends ServiceImpl<JellyfinWebhookEntityMap
         WeixinMPImageUploadResponse uploadResponse = JSON.to(WeixinMPImageUploadResponse.class, uploadResponseStr);
         if (null != uploadResponse && uploadResponse.success()) {
           FileUtil.deleteFile(localPath);
-          redisService.setValueWithTTL(redisCachedKey, uploadResponse.getUrl(), 86400);
+          GuavaCache.put(cachedKey, uploadResponse.getUrl());
           return uploadResponse.getUrl();
         }
       }
