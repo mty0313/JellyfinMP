@@ -44,7 +44,7 @@ public class RemoteServerInfoService extends ServiceImpl<RemoteServerInfoMapper,
     RemoteServerInfo jellyfin = new RemoteServerInfo(CustomAppId.Jellyfin, initJellyfinToken, initJellyfinServerUrl);
     insertServerInfo(jellyfin);
     RemoteServerInfo weixinMP = new RemoteServerInfo(CustomAppId.WeixinMP,
-        initWeixinMPAppId + "," + initWeixinMPAppSecret, initWeixinMPServerUrl);
+        initWeixinMPAppId + ";" + initWeixinMPAppSecret, initWeixinMPServerUrl);
     insertServerInfo(weixinMP);
   }
 
