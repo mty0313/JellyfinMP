@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/jellyfinmp?useUnicode=true&useSSL=false&characterEncoding=utf8
+    username: user
+    password: password
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: INFO
+    top.mty.remote: DEBUG
+    top.mty.controller.WebhookController: DEBUG
+
+bark:
+  serverUrl: https://example.com
+  weixinMP:
+    draftPostedNotifyDevices: deviceId1,
+
+jellyfin:
+  adminId: adminId
+  webhook:
+    # split with ";"
+    enabledNotificationTypes: ItemAdded;
+    serverTempData: src/main/resources/jellyfin-item-images-temp/
+
+weixin:
+  mp:
+    defaultActorImg: http://mmbiz.qpic.cn/mmbiz_png/czaOslr1DNdJV1AZndZVLpyxgOrr1xQg0XDia8hL1XrXq6JcwAF6Z6Y8c9Pq7dhqorBM0Q6cJvTFu5N1Pib5RLlg/0?wx_fmt=png
+    draft:
+      post2MpNews: false
+      send2All: false
+      updateDatabase: false
+
+init:
+  jellyfin:
+    serverUrl: https://jellyfin.example.com
+    token: JellyfinToken
+  weixinmp:
+    appId: weixinAppId
+    appSecret: weixinAppSecret
