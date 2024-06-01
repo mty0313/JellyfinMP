@@ -16,8 +16,4 @@ mvn package -Dmaven.test.skip=true
 
 docker build -t jellyfin-mp:$TAG .
 docker rm -f jellyfin-mp
-docker run -d --name jellyfin-mp \
-    -p 80:8089 \
-    --restart=always \
-    jellyfin-mp:$TAG
 docker image prune -a -f
