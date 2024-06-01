@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import top.mty.common.CustomAppId;
 import top.mty.entity.WeixinMPDraftPost;
@@ -17,6 +18,7 @@ import top.mty.remote.param.*;
 import top.mty.service.params.WeixinMPDraftCreateAndPost;
 import top.mty.utils.DateUtil;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -78,6 +80,9 @@ public class WeixinMPPostService {
     // 如果既不推送为图文也不群发, 则推送bark通知手动处理
     if (!afterDraft.isPost2MpNews() && !afterDraft.isSend2All()) {
       String[] draftPostedNotifyDevices = this.draftPostedNotifyDevices.split(",");
+      if (CollectionUtils.isEmpty(Arrays.asList(draftPostedNotifyDevices))) {
+        log.info("Bark推送设备列表为空忽略推送");
+      }
       for (String device : draftPostedNotifyDevices) {
         barkClient.pushMsg(device, String.format("Jellyfin %s 更新", DateUtil.toStandardYMD(new Date())), String.format("共计处理%s条记录", processedUuids.size()));
       }

@@ -57,6 +57,9 @@ public class WeixinMPDraftService {
     if (CollectionUtils.isEmpty(itemAddedRawList)) {
       log.info("没有新增媒体: {} - {}", start, now);
       String[] draftPostedNotifyDevices = this.draftPostedNotifyDevices.split(",");
+      if (CollectionUtils.isEmpty(Arrays.asList(draftPostedNotifyDevices))) {
+        log.info("Bark推送设备列表为空忽略推送");
+      }
       for (String device : draftPostedNotifyDevices) {
         barkClient.pushMsg(device, String.format("Jellyfin %s 更新", DateUtil.toStandardYMD(new Date())), "没有新增媒体内容");
       }
