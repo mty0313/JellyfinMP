@@ -11,6 +11,7 @@ RUN mkdir /server-temp
 COPY ./target/jellyfinmp-0.0.1-SNAPSHOT.jar /jellyfin-mp
 COPY ./src/main/resources/application.yml /jellyfin-mp
 COPY ./src/main/resources/application-online.yml /jellyfin-mp
+COPY ./src/main/resources/sql/setup.sql /jellyfin-mp
 
 # 暴露端口
 EXPOSE 8089

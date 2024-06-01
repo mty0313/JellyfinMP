@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 @Configuration
 public class CustomizeDataSourceInitializer {
-  @Value("classpath:sql/setup.sql")
+  @Value("${init.sql.setup}")
   private Resource sqlScriptSchema;
 
   @Bean
