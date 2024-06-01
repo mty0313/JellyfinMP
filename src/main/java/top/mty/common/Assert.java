@@ -11,7 +11,7 @@ public class Assert {
 
   public static void notEmpty(String text, String variable) {
     if (StringUtils.isEmpty(text)) {
-      throw new RuntimeException(variable + "cannot be empty");
+      throw new RuntimeException(variable + " cannot be empty");
     }
   }
 }

@@ -16,10 +16,10 @@ logging:
 bark:
   serverUrl: https://example.com
   weixinMP:
-    draftPostedNotifyDevices: deviceId1,
+    draftPostedNotifyDevices:
 
 jellyfin:
-  adminId: adminId
+  adminId:
   webhook:
     # split with ";"
     enabledNotificationTypes: ItemAdded;
