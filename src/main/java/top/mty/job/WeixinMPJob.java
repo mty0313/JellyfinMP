@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import top.mty.common.JellyfinMPException;
 import top.mty.job.params.WeixinMPAfterDraft;
 import top.mty.service.WeixinMPDraftService;
@@ -30,7 +29,7 @@ public class WeixinMPJob {
     weixinTokenService.refreshAccessToken();
   }
 
-  @Scheduled(cron = "0 0 9 * * ?")
+  @Scheduled(initialDelay = 10000, cron = "0 0 9 * * ?")
   public void draftCreate() throws JellyfinMPException {
     WeixinMPAfterDraft afterDraft = new WeixinMPAfterDraft(post2MpNews, send2All, updateDatabase);
     weixinMPDraftService.createDraft(afterDraft);
