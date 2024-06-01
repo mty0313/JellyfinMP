@@ -40,5 +40,3 @@ init:
   weixinmp:
     appId: weixinAppId
     appSecret: weixinAppSecret
-  sql:
-    setup: /jellyfin-mp/setup.sql
