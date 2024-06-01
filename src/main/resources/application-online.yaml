@@ -35,8 +35,8 @@ weixin:
 
 init:
   jellyfin:
-    serverUrl: https://jellyfin.example.com
-    token: JellyfinToken
+    serverUrl:
+    token:
   weixinmp:
-    appId: weixinAppId
-    appSecret: weixinAppSecret
+    appId:
+    appSecret:
