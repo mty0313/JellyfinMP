@@ -2,7 +2,6 @@ package top.mty.job;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import top.mty.common.JellyfinMPException;
@@ -27,7 +26,7 @@ public class WeixinMPJob {
   @Autowired
   private WeixinMPDraftService weixinMPDraftService;
 
-  @Scheduled(initialDelay = 0, fixedRate = 7000000)
+  @Scheduled(fixedRate = 7000000)
   public void tokenRefresh() {
     weixinTokenService.refreshAccessToken();
   }
@@ -36,11 +35,5 @@ public class WeixinMPJob {
   public void draftCreate() throws JellyfinMPException {
     WeixinMPAfterDraft afterDraft = new WeixinMPAfterDraft(post2MpNews, send2All, updateDatabase);
     weixinMPDraftService.createDraft(afterDraft);
-  }
-
-  @PostConstruct
-  @DependsOn("dataSourceInitializer")
-  public void init() throws JellyfinMPException {
-    draftCreate();
   }
 }

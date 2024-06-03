@@ -3,55 +3,20 @@ package top.mty.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import top.mty.common.Assert;
-import top.mty.common.CustomAppId;
 import top.mty.entity.RemoteServerInfo;
 import top.mty.mapper.RemoteServerInfoMapper;
 
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@DependsOn("dataSourceInitializer")
 public class RemoteServerInfoService extends ServiceImpl<RemoteServerInfoMapper, RemoteServerInfo> {
   @Autowired
   private RemoteServerInfoMapper remoteServerInfoMapper;
-  @Value("${init.jellyfin.serverUrl}")
-  private String initJellyfinServerUrl;
-  @Value("${init.jellyfin.token}")
-  private String initJellyfinToken;
-  @Value("${init.weixinmp.appId}")
-  private String initWeixinMPAppId;
-  @Value("${init.weixinmp.appSecret}")
-  private String initWeixinMPAppSecret;
-  @Value("${init.weixinmp.serverUrl:https://api.weixin.qq.com}")
-  private String initWeixinMPServerUrl;
-
-  @PostConstruct
-  public void init() {
-    // 运行时必须要有remoteServerInfo的参数，每次启动时都会更新
-    Assert.notEmpty(initJellyfinServerUrl, "initJellyfinServerUrl");
-    Assert.notEmpty(initJellyfinToken, "initJellyfinToken");
-    Assert.notEmpty(initWeixinMPAppId, "initWeixinMPAppId");
-    Assert.notEmpty(initWeixinMPAppSecret, "initWeixinMPAppSecret");
-    Assert.notEmpty(initWeixinMPServerUrl, "initWeixinMPServerUrl");
-    QueryWrapper<RemoteServerInfo> wrapper = new QueryWrapper<>();
-    wrapper.in("app_id", Arrays.asList(CustomAppId.Jellyfin.name(), CustomAppId.WeixinMP.name()));
-    remoteServerInfoMapper.delete(wrapper);
-    RemoteServerInfo jellyfin = new RemoteServerInfo(CustomAppId.Jellyfin, initJellyfinToken, initJellyfinServerUrl);
-    insertServerInfo(jellyfin);
-    RemoteServerInfo weixinMP = new RemoteServerInfo(CustomAppId.WeixinMP,
-        initWeixinMPAppId + ";" + initWeixinMPAppSecret, initWeixinMPServerUrl);
-    insertServerInfo(weixinMP);
-  }
 
   public RemoteServerInfo getServerInfoByAppId(String appId) {
     QueryWrapper<RemoteServerInfo> wrapper = new QueryWrapper<>();
@@ -61,6 +26,10 @@ public class RemoteServerInfoService extends ServiceImpl<RemoteServerInfoMapper,
       return null;
     }
     return result.get(0);
+  }
+
+  public void delete(QueryWrapper<RemoteServerInfo> wrapper) {
+    remoteServerInfoMapper.delete(wrapper);
   }
 
   public void insertServerInfo(RemoteServerInfo remoteServerInfo) {
