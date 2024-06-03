@@ -7,13 +7,6 @@ fi
 
 TAG=$1
 
-git checkout main
-git fetch --all
-git reset --hard origin/main
-git pull
-
-mvn package -Dmaven.test.skip=true
+mvn clean && mvn package -Dmaven.test.skip=true
 
 docker build -t jellyfin-mp:$TAG .
-docker rm -f jellyfin-mp
-docker image prune -a -f
