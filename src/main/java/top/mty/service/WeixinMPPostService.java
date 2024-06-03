@@ -12,7 +12,6 @@ import top.mty.common.CustomAppId;
 import top.mty.entity.WeixinMPDraftPost;
 import top.mty.job.params.WeixinMPAfterDraft;
 import top.mty.mapper.WeixinMPDraftPostMapper;
-import top.mty.remote.BarkClient;
 import top.mty.remote.WeixinMPClient;
 import top.mty.remote.param.*;
 import top.mty.service.params.WeixinMPDraftCreateAndPost;
@@ -33,7 +32,7 @@ public class WeixinMPPostService {
   @Autowired
   private JellyfinWebhookService jellyfinWebhookService;
   @Autowired
-  private BarkClient barkClient;
+  private BarkService barkService;
   @Value("${bark.weixinMP.draftPostedNotifyDevices:\"\"}")
   private String draftPostedNotifyDevices;
   /**
@@ -84,7 +83,7 @@ public class WeixinMPPostService {
         log.info("Bark推送设备列表为空忽略推送");
       }
       for (String device : draftPostedNotifyDevices) {
-        barkClient.pushMsg(device, String.format("Jellyfin %s 更新", DateUtil.toStandardYMD(new Date())), String.format("共计处理%s条记录", processedUuids.size()));
+        barkService.pushMsg(device, String.format("Jellyfin %s 更新", DateUtil.toStandardYMD(new Date())), String.format("共计处理%s条记录", processedUuids.size()));
       }
     }
     return new WeixinMPDraftCreateAndPost(afterDraft.isPost2MpNews(), afterDraft.isSend2All(), mediaId, publishId);

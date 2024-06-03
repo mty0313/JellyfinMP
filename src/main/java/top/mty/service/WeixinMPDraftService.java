@@ -14,9 +14,11 @@ import top.mty.common.JellyfinMPException;
 import top.mty.controller.data.jellyfin.webhook.JellyfinWebhookProperties;
 import top.mty.entity.JellyfinWebhookEntity;
 import top.mty.job.params.WeixinMPAfterDraft;
-import top.mty.remote.BarkClient;
 import top.mty.remote.JellyfinFullControlApiClient;
-import top.mty.remote.param.*;
+import top.mty.remote.param.JellyfinItemCount;
+import top.mty.remote.param.JellyfinItemExtra4ArticleContent;
+import top.mty.remote.param.JellyfinUserLibraryItem;
+import top.mty.remote.param.WeixinMPDraftCreateRequest;
 import top.mty.service.params.WeixinMPDraftCreateAndPost;
 import top.mty.utils.DateUtil;
 import top.mty.utils.RegexUtil;
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
 public class WeixinMPDraftService {
 
   @Autowired
-  private BarkClient barkClient;
+  private BarkService barkService;
   @Autowired
   private JellyfinWebhookService webhookService;
   @Autowired
@@ -61,7 +63,7 @@ public class WeixinMPDraftService {
         log.info("Bark推送设备列表为空忽略推送");
       }
       for (String device : draftPostedNotifyDevices) {
-        barkClient.pushMsg(device, String.format("Jellyfin %s 更新", DateUtil.toStandardYMD(new Date())), "没有新增媒体内容");
+        barkService.pushMsg(device, String.format("Jellyfin %s 更新", DateUtil.toStandardYMD(new Date())), "没有新增媒体内容");
       }
       return;
     }
