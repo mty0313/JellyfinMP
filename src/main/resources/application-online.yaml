@@ -23,7 +23,6 @@ jellyfin:
   webhook:
     # split with ";"
     enabledNotificationTypes: ItemAdded;
-    serverTempData: src/main/resources/jellyfin-item-images-temp/
 
 weixin:
   mp:

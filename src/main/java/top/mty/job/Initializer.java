@@ -1,6 +1,7 @@
 package top.mty.job;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 @Component
 @DependsOn("dataSourceInitializer")
+@Slf4j
 public class Initializer {
   @Autowired
   private RemoteServerInfoService remoteServerInfoService;
@@ -34,9 +36,14 @@ public class Initializer {
 
   @PostConstruct
   public void init() throws JellyfinMPException {
-    initServerParams();
-    tokenRefresh();
-    createDraft();
+    try {
+      initServerParams();
+      tokenRefresh();
+      createDraft();
+    } catch (Exception e) {
+      log.error("初始化任务失败: {}", e.getMessage());
+    }
+
   }
 
   private void initServerParams() {
