@@ -46,14 +46,11 @@ docker run -d \
   -e DATABASE_URL=localhost:3306 \
   -e DATABASE_USER=user \
   -e DATABASE_PASS=pass \
-  -e UPDATE_DATABASE=true \
   -e BARK_SERVER=bark.changeme.com \
   -e BARK_DEVICE=changeme_bark_device_id \
   -e JELLYFIN_SERVER_URL=https://jellyfin.example.com \
   -e JELLYFIN_ADMIN=changeme_jellyfin_user_id \
   -e JELLYFIN_TOKEN=changeme_jellyfin_token \
-  -e MP_POST_TO_MP_NEWS=false \
-  -e MP_SEND_TO_ALL=false \
   -e MP_APP_ID=changeme_app_id \
   -e MP_APP_SECRET=changeme_app_secret \
   jellyfin-mp:latest
@@ -94,7 +91,7 @@ JELLYFIN_TOKEN: Jellyfin的API密钥, 在Jellyfin的后台可以生成. 生成�
 
 ### 微信公众号开发信息 (必填项)
 
-对接![微信公众号](https://mp.weixin.qq.com/)必需的信息, 如果没有公众号可参考资料注册一个**订阅号**即可. 
+对接[微信公众号](https://mp.weixin.qq.com/)必需的信息, 如果没有公众号可参考资料注册一个**订阅号**即可. 
 
 在微信公众平台除了获取到所需的appId和appSecret之外, 还需要填写IP白名单, 因为微信的Token获取是白名单限制的. 
 
@@ -143,6 +140,6 @@ BARK_DEVICE: BARK设备ID, 注册BARK服务后可以获得, 详情移步BARK官�
 | `JELLYFIN_SERVER_URL`| 是  | `无`                | Jellyfin服务器URL                   |
 | `JELLYFIN_TOKEN`     | 是  | `无`                | Jellyfin API令牌                   |
 | `MP_POST_TO_MP_NEWS` | 否  | `false`            | 是否将内容发布到微信普通文章（`true` 或 `false`） |
-| `MP_SEND_TO_ALL`     | 否  | `false`            | 是否将文章推送给订阅用户（`true` 或 `false`）   |
+| `MP_SEND_TO_ALL`     | 否  | `false`            | 是否将文章群发推送给订阅用户（`true` 或 `false`） |
 | `MP_APP_ID`          | 是  | `无`                | 微信公众平台应用ID                       |
 | `MP_APP_SECRET`      | 是  | `无`                | 微信公众平台应用密钥                       |
