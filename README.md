@@ -12,7 +12,7 @@ Jellyfin服务器的Webhook插件能够推送新的媒体入库的消息, 基于
 4. 每天9点, JellyfinMP开始执行定时任务, 查找昨天新入库的所有媒体记录, 生成一篇草稿, 推送到你的公众号草稿箱里, 并通过Bark通知到你(如果配置了Bark)
 5. JellyfinMP自动将草稿发布为普通文章(如果开启配置), 自动将文章群发给所有的订阅者(如果公众号做了认证, 并且开启了配置)
 
-![文章示例]()
+![文章示例](./img/mp_example.png)
 
 ## 快速开始
 
@@ -53,7 +53,7 @@ docker run -d \
   -e JELLYFIN_TOKEN=changeme_jellyfin_token \
   -e MP_APP_ID=changeme_app_id \
   -e MP_APP_SECRET=changeme_app_secret \
-  jellyfin-mp:latest
+  martin0313/jellyfin-mp:latest
 ```
 
 ### 第一次使用
