@@ -194,7 +194,7 @@ public class WeixinMPDraftService {
     if (null != itemCount) {
       sb.append("<br><strong>Jellyfin已收录").append(itemCount.getMovieCount()).append("部电影, ")
           .append(itemCount.getSeriesCount()).append("个剧集(").append(itemCount.getEpisodeCount()).append("单集). <strong><br>")
-          .append("<br><i>以上内容依据 <strong>TMDB</strong> 由 <strong>plain-server</strong> 自动生成</i><br>");
+          .append("<br><i>以上内容依据 <strong>TMDB</strong> 由 <strong>JellyfinMP</strong> 自动生成, 点击阅读原文了解更多.</i><br>");
     }
   }
 

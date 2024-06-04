@@ -4,14 +4,25 @@
 
 Jellyfin服务器的Webhook插件能够推送新的媒体入库的消息, 基于这一点实现了通过定时任务每天上午9:00生成一篇新的微信公众号文章的功能.
 
+### 工作流简介
+
+1. 你有一个Jellyfin实例正常运行, 小范围内分享给几个朋友, 大家都想知道服务器上最近上新了什么好看的, 你上新了自己中意的电影电视也想安利给所有的朋友.
+2. 于是你在官方插件仓库安装了Webhook插件, 并设置了JellyfinMP来接收, 每次有新的刮削好的媒体入库都会通知给JellyfinMP.
+3. JellyfinMP收到新的媒体入库的请求, 筛选公众号文章所需的内容, 持久化到数据库.
+4. 每天9点, JellyfinMP开始执行定时任务, 查找昨天新入库的所有媒体记录, 生成一篇草稿, 推送到你的公众号草稿箱里, 并通过Bark通知到你(如果配置了Bark)
+5. JellyfinMP自动将草稿发布为普通文章(如果开启配置), 自动将文章群发给所有的订阅者(如果公众号做了认证, 并且开启了配置)
+
+![文章示例]()
+
 ## 快速开始
 
 ### 准备工作
 
-1. 拥有完全管理权的Jellyfin服务器, 服务器可暴露在公网. 并且拥有TMM刮削元数据的完整工作流.
-2. 作为管理者拥有一个微信订阅号, 不一定需要认证.
-3. 部署好的MySql8.0, 并且创建好数据库`jellyfinmp`: `create database jellyfinmp;`.
-4. 部署好的Bark服务(可选).
+1. 拥有完全管理权的Jellyfin服务器, 服务器可暴露在公网, 或者可以让JellyfinMP访问到, 并且拥有TMM刮削元数据的完整工作流.
+2. JellyfinMP需要有公网可访问地址, 端口可以自己设置. (微信Token获取需要IP白名单)
+3. 作为管理者拥有一个微信订阅号, 不一定需要认证.
+4. 部署好的MySql8.0, 并且创建好数据库`jellyfinmp`: `create database jellyfinmp;`.
+5. 部署好的Bark服务(可选).
 
 ### 前期设置
 
@@ -21,11 +32,12 @@ Jellyfin服务器的Webhook插件能够推送新的媒体入库的消息, 基于
    1. ServerUrl按照实际填写
    2. 选择Add Generic Destination
    3. Webhook Name 填写 JellyfinMP
-   4. Webhook Url 填写 http(s)://你的JellyfinMP部署地址/todo
+   4. Webhook Url 填写 http(s)://你的JellyfinMP部署地址:端口/jellyfinmp/webhook/jellyfin
    5. Notification Type 勾选 Item Added , ItemType 全部勾选, **包括 Send All Properties (ignores template)**
    6. Add Request Header处添加一项key=Content-Type, value=application/json
 
 ### 启动
+
 ```shell
 docker run -d \
   --name jellyfin-mp \
@@ -46,6 +58,13 @@ docker run -d \
   -e MP_APP_SECRET=changeme_app_secret \
   jellyfin-mp:latest
 ```
+
+### 第一次使用
+
+1. 所有参数设置正确并做完所有准备工作后`docker run`, JellyfinMP会尝试获取一次微信AccessToken, 并进行一次文章生成, 由于没有任何媒体在数据库所以不会生成任何文章.
+2. 正常在Jellyfin添加媒体(刮削后的, 建议配合TMM使用).
+3. 重启一次容器, JellyfinMP会再次尝试文章生成, 检查Bark通知(如果配置), 在微信公众平台(`网页端`或者官方`订阅号助手`APP)检查草稿箱.
+4. 如果没有问题可以将文章群发进行推送, JellyfinMP保持运行即可, 每日9:00进行一次文章生成尝试.
 
 ## 参数说明
 
@@ -120,10 +139,10 @@ BARK_DEVICE: BARK设备ID, 注册BARK服务后可以获得, 详情移步BARK官�
 | `UPDATE_DATABASE`    | 否  | `true`             | 是否更新数据库 (false常用于debug, 默认为true) |
 | `BARK_SERVER`        | 否  | `http://localhost` | Bark服务器地址                        |
 | `BARK_DEVICE`        | 否  | `无`                | Bark设备标识符                        |
-| `JELLYFIN_ADMIN`     | 否  | `无`                | Jellyfin管理员用户名                   |
-| `JELLYFIN_SERVER_URL`| 否  | `无`                | Jellyfin服务器URL                   |
-| `JELLYFIN_TOKEN`     | 否  | `无`                | Jellyfin API令牌                   |
+| `JELLYFIN_ADMIN`     | 是  | `无`                | Jellyfin管理员用户名                   |
+| `JELLYFIN_SERVER_URL`| 是  | `无`                | Jellyfin服务器URL                   |
+| `JELLYFIN_TOKEN`     | 是  | `无`                | Jellyfin API令牌                   |
 | `MP_POST_TO_MP_NEWS` | 否  | `false`            | 是否将内容发布到微信普通文章（`true` 或 `false`） |
 | `MP_SEND_TO_ALL`     | 否  | `false`            | 是否将文章推送给订阅用户（`true` 或 `false`）   |
-| `MP_APP_ID`          | 是  | `""`               | 微信公众平台应用ID                       |
-| `MP_APP_SECRET`      | 是  | `""`               | 微信公众平台应用密钥                       |
+| `MP_APP_ID`          | 是  | `无`                | 微信公众平台应用ID                       |
+| `MP_APP_SECRET`      | 是  | `无`                | 微信公众平台应用密钥                       |
