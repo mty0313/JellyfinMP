@@ -114,7 +114,7 @@ public class WeixinMPDraftService {
     // 添加电影项目
     StringBuilder movieContent = new StringBuilder();
     if (processedEntities.stream().anyMatch(p -> JellyfinWebhookProperties.ITEM_TYPE_MOVIE.equals(p.getItemType()))) {
-      movieContent.append("<h2 style=\"font-size: 18px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;letter-spacing: 1px;\">电影:</h2><br>");
+      movieContent.append("<h2 style=\"color: #2974c8;font-size: 18px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;letter-spacing: 1px;\">电影:</h2><br>");
       int index = 1;
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_MOVIE.equals(entity.getItemType())) {
@@ -148,7 +148,7 @@ public class WeixinMPDraftService {
     // 添加电视剧项目
     StringBuilder episodesContent = new StringBuilder();
     if (processedEntities.stream().anyMatch(p -> JellyfinWebhookProperties.ITEM_TYPE_SERIES.equals(p.getItemType()))) {
-      episodesContent.append("<h2 style=\"font-size: 18px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;letter-spacing: 1px;\">剧集:</h2><br>");
+      episodesContent.append("<h2 style=\"color: #2974c8;font-size: 18px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;letter-spacing: 1px;\">剧集:</h2><br>");
       int index = 1;
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_SERIES.equals(entity.getItemType())) {
@@ -157,8 +157,11 @@ public class WeixinMPDraftService {
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, episodesContent);
           // 添加视频格式
-          episodesContent.append("【<em>").append(findResolution(entity)).append("</em>】");
+          String video_title = findResolution(entity);
 
+          if(StringUtils.hasText(video_title))(
+            episodesContent.append("【<em>").append(video_title).append("</em>】");
+          )
           episodesContent.append("<br><br>");
           // 添加图片
           try {
