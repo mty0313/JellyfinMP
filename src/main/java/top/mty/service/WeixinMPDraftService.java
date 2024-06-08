@@ -119,10 +119,12 @@ public class WeixinMPDraftService {
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_MOVIE.equals(entity.getItemType())) {
           // 添加标题
-          movieContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ")
-              .append(findResolution(entity));
+          movieContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ");
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, movieContent);
+          // 添加视频格式
+          movieContent.append(" <em>").append(findResolution(entity)).append("</em>");
+
           movieContent.append("<br>");
           // 添加图片
           try {
@@ -155,7 +157,7 @@ public class WeixinMPDraftService {
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, episodesContent);
           // 添加视频格式
-          episodesContent.append(" 🎬").append(findResolution(entity));
+          episodesContent.append(" <em>").append(findResolution(entity)).append("</em>");
 
           episodesContent.append("<br>");
           // 添加图片
