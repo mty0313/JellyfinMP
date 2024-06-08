@@ -47,7 +47,7 @@ public class WeixinMPDraftCreateRequest {
      * 图文消息的原文地址，即点击“阅读原文”后的URL
      */
     @JsonProperty("content_source_url")
-    private String contentSourceUrl = "";
+    private String contentSourceUrl = "https://github.com/jaxwang/JellyfinMP/tree/jaxwang-branch";
     /**
      * 图文消息的封面图片素材id（必须是永久MediaID）
      */

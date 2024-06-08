@@ -151,10 +151,12 @@ public class WeixinMPDraftService {
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_SERIES.equals(entity.getItemType())) {
           // 添加标题
-          episodesContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ")
-              .append(findResolution(entity));
+          episodesContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ");
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, episodesContent);
+          // 添加视频格式
+          episodesContent.append(" 🎬").append(findResolution(entity));
+
           episodesContent.append("<br>");
           // 添加图片
           try {
@@ -194,7 +196,7 @@ public class WeixinMPDraftService {
     if (null != itemCount) {
       sb.append("<br><strong>Jellyfin已收录").append(itemCount.getMovieCount()).append("部电影, ")
           .append(itemCount.getSeriesCount()).append("个剧集(").append(itemCount.getEpisodeCount()).append("单集). <strong><br>")
-          .append("<br><i>以上内容依据 <strong>TMDB</strong> 由 <strong>JellyfinMP</strong> 自动生成. </i><br>");
+          .append("<br><i>以上内容依据 <strong>TMDB</strong> 由 <strong>JellyfinMP:jaxwang-branch</strong> 自动生成. </i><br>");
     }
   }
 
