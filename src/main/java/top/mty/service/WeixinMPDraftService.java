@@ -159,9 +159,9 @@ public class WeixinMPDraftService {
           // 添加视频格式
           String video_title = findResolution(entity);
 
-          if(StringUtils.hasText(video_title))(
+          if(StringUtils.hasText(video_title)){
             episodesContent.append("【<em>").append(video_title).append("</em>】");
-          )
+          }
           episodesContent.append("<br><br>");
           // 添加图片
           try {
