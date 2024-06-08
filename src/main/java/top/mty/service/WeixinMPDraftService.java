@@ -194,7 +194,7 @@ public class WeixinMPDraftService {
     if (null != itemCount) {
       sb.append("<br><strong>Jellyfin已收录").append(itemCount.getMovieCount()).append("部电影, ")
           .append(itemCount.getSeriesCount()).append("个剧集(").append(itemCount.getEpisodeCount()).append("单集). <strong><br>")
-          .append("<br><i>以上内容依据 <strong>TMDB</strong> 由 <strong>JellyfinMP</strong> 自动生成, 点击阅读原文了解更多.</i><br>");
+          .append("<br><i>以上内容依据 <strong>TMDB</strong> 由 <strong>JellyfinMP</strong> 自动生成. </i><br>");
     }
   }
 
@@ -203,7 +203,8 @@ public class WeixinMPDraftService {
       return "";
     }
     // todo 从userLibraryItem中获取准确的视频信息
-    String resolution = RegexUtil.findStrByPattern(entity.getVideo0Title(), RESOLUTION);
+    // String resolution = RegexUtil.findStrByPattern(entity.getVideo0Title(), RESOLUTION);
+    String resolution = entity.getVideo0Title(); //获取全部信息， 不需要正则匹配
     if (StringUtils.hasText(resolution)) {
       return resolution + " ";
     }
@@ -219,10 +220,10 @@ public class WeixinMPDraftService {
       return;
     }
     articleContent.append("<strong>演职人员(滑动查看):</strong><br><br>");
-    articleContent.append("<div style=\"overflow-x: auto; white-space: nowrap;\">");
-    String actorImage = "<div style=\"display: inline-block; vertical-align: top; text-align: center; padding: 10px; width: 120px; white-space: normal;\"><img src=\"%s\" alt=\"%s\" style=\"width: 100px; height: 100px;\"><p style=\"font-size: 10px;\">%s<br>饰演: %s</p></div>";
+    articleContent.append("<section style=\"overflow-x: auto; white-space: nowrap;\">");
+    String actorImage = "<section style=\"display: inline-block; vertical-align: top; text-align: center; padding: 10px; width: 120px; white-space: normal;\"><img src=\"%s\" alt=\"%s\" style=\"width: 100px; height: 100px;\"><p style=\"font-size: 10px;\">%s<br>饰演: %s</p></section>";
     extra4ArticleContent.getActorList().forEach(a -> articleContent.append(String.format(actorImage, a.getImageUrl(), a.getName(), a.getName(), a.getRole())));
-    articleContent.append("</div><br>");
+    articleContent.append("</section><br>");
   }
 
   private void fetchExtra4ArticleContent (JellyfinWebhookEntity entity, StringBuilder articleContent) {
