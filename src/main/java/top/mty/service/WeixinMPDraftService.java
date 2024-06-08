@@ -123,7 +123,7 @@ public class WeixinMPDraftService {
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, movieContent);
           // 添加视频格式
-          movieContent.append("【<em>").append(findResolution(entity)).append("</em>】");
+          movieContent.append("<br>【<em>").append(findResolution(entity)).append("</em>】");
 
           movieContent.append("<br><br>");
           // 添加图片
@@ -160,7 +160,7 @@ public class WeixinMPDraftService {
           String video_title = findResolution(entity);
 
           if(StringUtils.hasText(video_title)){
-            episodesContent.append("【<em>").append(video_title).append("</em>】");
+            episodesContent.append("<br>【<em>").append(video_title).append("</em>】");
           }
           episodesContent.append("<br><br>");
           // 添加图片
