@@ -114,18 +114,18 @@ public class WeixinMPDraftService {
     // 添加电影项目
     StringBuilder movieContent = new StringBuilder();
     if (processedEntities.stream().anyMatch(p -> JellyfinWebhookProperties.ITEM_TYPE_MOVIE.equals(p.getItemType()))) {
-      movieContent.append("<h2>电影:</h2><br>");
+      movieContent.append("<h2 style=\"font-size: 18px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;letter-spacing: 1px;\">电影:</h2><br>");
       int index = 1;
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_MOVIE.equals(entity.getItemType())) {
           // 添加标题
-          movieContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ");
+          movieContent.append(index).append(".「").append(entity.getName()).append("」(").append(entity.getYear()).append(") ");
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, movieContent);
           // 添加视频格式
-          movieContent.append(" <em>").append(findResolution(entity)).append("</em>");
+          movieContent.append("【<em>").append(findResolution(entity)).append("</em>】");
 
-          movieContent.append("<br>");
+          movieContent.append("<br><br>");
           // 添加图片
           try {
             String imageUrl = processEntityImage(entity);
@@ -138,7 +138,7 @@ public class WeixinMPDraftService {
             movieContent.append("<br>");
           }
           // 添加描述
-          movieContent.append(entity.getOverview()).append("<br>");
+          movieContent.append(entity.getOverview()).append("<br><br>");
           // 添加演员图片
           fetchActors4ArticleContent(entity, movieContent);
           index++;
@@ -148,18 +148,18 @@ public class WeixinMPDraftService {
     // 添加电视剧项目
     StringBuilder episodesContent = new StringBuilder();
     if (processedEntities.stream().anyMatch(p -> JellyfinWebhookProperties.ITEM_TYPE_SERIES.equals(p.getItemType()))) {
-      episodesContent.append("<h2>剧集:</h2><br>");
+      episodesContent.append("<h2 style=\"font-size: 18px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;letter-spacing: 1px;\">剧集:</h2><br>");
       int index = 1;
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_SERIES.equals(entity.getItemType())) {
           // 添加标题
-          episodesContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ");
+          episodesContent.append(index).append(".「").append(entity.getName()).append("」(").append(entity.getYear()).append(") ");
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, episodesContent);
           // 添加视频格式
-          episodesContent.append(" <em>").append(findResolution(entity)).append("</em>");
+          episodesContent.append("【<em>").append(findResolution(entity)).append("</em>】");
 
-          episodesContent.append("<br>");
+          episodesContent.append("<br><br>");
           // 添加图片
           try {
             String imageUrl = processEntityImage(entity);
@@ -173,7 +173,7 @@ public class WeixinMPDraftService {
           }
           // 添加描述
           if (StringUtils.hasText(entity.getOverview())) {
-            episodesContent.append(entity.getOverview()).append("<br>");
+            episodesContent.append(entity.getOverview()).append("<br><br>");
           }
           // 添加演员图片
           fetchActors4ArticleContent(entity, episodesContent);
