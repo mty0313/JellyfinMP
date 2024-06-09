@@ -32,7 +32,6 @@ services:
       MYSQL_DATABASE: jellyfinmp
       MYSQL_USER: jellyfinmp_user
       MYSQL_PASSWORD: jellyfinmp_password
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
     ports:
       - "3306:3306"
     volumes:

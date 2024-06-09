@@ -37,6 +37,13 @@ public class JellyfinWebhookEntity {
    */
   @JsonProperty("Name")
   private String name;
+
+  /**
+   * 电影/剧集 文件路径
+   */
+  @JsonProperty("Path")
+  private String path; //add by jaxwang
+
   /**
    * 简介
    */
@@ -106,6 +113,9 @@ public class JellyfinWebhookEntity {
   public static JellyfinWebhookEntity toWebhookEntity(JellyfinWebhookProperties properties) {
     JellyfinWebhookEntity entity = new JellyfinWebhookEntity();
     entity.setName(properties.getName());
+
+    entity.setPath(properties.getPath()); //add by jaxwang
+
     entity.setItemType(properties.getItemType());
     if (null != properties.getOverview()) {
       properties.setOverview(properties.getOverview().replaceAll("\\s+", ""));
