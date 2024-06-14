@@ -52,11 +52,6 @@ public class JellyfinWebhookProperties {
   @JsonProperty("Name")
   private String name;
   /**
-   * 电影/剧集 文件路径
-   */
-  @JsonProperty("Path")
-  private String path; //add by jaxwang
-  /**
    * 简介
    */
   @JsonProperty("Overview")
