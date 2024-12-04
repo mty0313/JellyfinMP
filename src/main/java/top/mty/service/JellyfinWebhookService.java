@@ -328,6 +328,9 @@ public class JellyfinWebhookService extends ServiceImpl<JellyfinWebhookEntityMap
    */
   private boolean allowed2Database(JellyfinWebhookEntity entity) {
     // 只有刮削过的媒体才有元数据, 才可以计入数据库
+
+    log.debug("MEDIA_BEFORE_DB: {}", entity);
+
     if (StringUtils.hasText(entity.getOverview())
         && StringUtils.hasText(entity.getName())) {
       // 如果是episode, 还要注意在tmm中重命名之前不能入库

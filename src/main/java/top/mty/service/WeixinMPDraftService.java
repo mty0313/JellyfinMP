@@ -50,7 +50,7 @@ public class WeixinMPDraftService {
 
   public void createDraft(WeixinMPAfterDraft afterDraft) throws JellyfinMPException {
     Date now = new Date();
-    Date start = DateUtils.addDays(now, -2);
+    Date start = DateUtils.addDays(now, -30);
     QueryWrapper<JellyfinWebhookEntity> wrapper = new QueryWrapper<>();
     wrapper.ge("timestamp", start);
     wrapper.eq("processed", false);
@@ -114,15 +114,17 @@ public class WeixinMPDraftService {
     // 添加电影项目
     StringBuilder movieContent = new StringBuilder();
     if (processedEntities.stream().anyMatch(p -> JellyfinWebhookProperties.ITEM_TYPE_MOVIE.equals(p.getItemType()))) {
-      movieContent.append("<h2>电影:</h2><br>");
+      movieContent.append("<h2 style=\"color: #007aaa;font-size: 20px;text-align: center;\">『 电影 』</h2><br>");
       int index = 1;
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_MOVIE.equals(entity.getItemType())) {
           // 添加标题
-          movieContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ")
-              .append(findResolution(entity));
+          movieContent.append(index).append(". <span style=\"color: #007aaa;font-size: 18px;\">").append(entity.getName()).append("</span> <em style=\"font-size: 16px;\">(").append(entity.getYear()).append(")</em> ");
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, movieContent);
+          // 添加视频格式
+          movieContent.append("<br><em style=\"font-size:14px;\">【").append(findResolution(entity)).append("】</em>");
+
           movieContent.append("<br>");
           // 添加图片
           try {
@@ -146,15 +148,20 @@ public class WeixinMPDraftService {
     // 添加电视剧项目
     StringBuilder episodesContent = new StringBuilder();
     if (processedEntities.stream().anyMatch(p -> JellyfinWebhookProperties.ITEM_TYPE_SERIES.equals(p.getItemType()))) {
-      episodesContent.append("<h2>剧集:</h2><br>");
+      episodesContent.append("<h2 style=\"color: #407600;font-size: 20px;text-align: center;\">『 剧集 』</h2><br>");
       int index = 1;
       for (JellyfinWebhookEntity entity : processedEntities) {
         if (JellyfinWebhookProperties.ITEM_TYPE_SERIES.equals(entity.getItemType())) {
           // 添加标题
-          episodesContent.append(index).append(". ").append(entity.getName()).append("(").append(entity.getYear()).append(") ")
-              .append(findResolution(entity));
+          episodesContent.append(index).append(". <span style=\"color: #407600;font-size: 18px;\">").append(entity.getName()).append("</span> <em style=\"font-size: 16px;\">(").append(entity.getYear()).append(")</em> ");
           // 添加分级和评分
           fetchExtra4ArticleContent(entity, episodesContent);
+          // 添加视频格式
+          String video_title = findResolution(entity);
+
+          if(StringUtils.hasText(video_title)){
+            episodesContent.append("<br><em style=\"font-size:14px;\">【").append(video_title).append("】</em> ");
+          }
           episodesContent.append("<br>");
           // 添加图片
           try {
@@ -174,7 +181,7 @@ public class WeixinMPDraftService {
           // 添加演员图片
           fetchActors4ArticleContent(entity, episodesContent);
           if (StringUtils.hasText(entity.getSeasonEpisode())) {
-            episodesContent.append("更新单集如下: ").append(entity.getSeasonEpisode()).append("<br>");
+            episodesContent.append("更新单集如下: ").append(entity.getSeasonEpisode()).append("<br><br>");
           }
           index++;
         }
@@ -192,9 +199,9 @@ public class WeixinMPDraftService {
   private void addFooter(StringBuilder sb) {
     JellyfinItemCount itemCount = webhookService.getItemCount();
     if (null != itemCount) {
-      sb.append("<br><strong>Jellyfin已收录").append(itemCount.getMovieCount()).append("部电影, ")
-          .append(itemCount.getSeriesCount()).append("个剧集(").append(itemCount.getEpisodeCount()).append("单集). <strong><br>")
-          .append("<br><i>以上内容依据 <strong>TMDB</strong> 由 <strong>JellyfinMP</strong> 自动生成, 点击阅读原文了解更多.</i><br>");
+      sb.append("<br><strong>Jellyfin已收录<span style=\"color:#ab1942;\">").append(itemCount.getMovieCount()).append("</span>部电影, <span style=\"color:#ab1942;\">")
+          .append(itemCount.getSeriesCount()).append("</span>个剧集 包含<span style=\"color:#ab1942;\">").append(itemCount.getEpisodeCount()).append("</span>单集. <strong><br>")
+          .append("<br><i>点击下方<strong>“阅读原文”</strong>可使用<strong>「guest」</strong>用户登录查看, 关注本公众号获取登录密码</i><br>");
     }
   }
 
@@ -203,7 +210,8 @@ public class WeixinMPDraftService {
       return "";
     }
     // todo 从userLibraryItem中获取准确的视频信息
-    String resolution = RegexUtil.findStrByPattern(entity.getVideo0Title(), RESOLUTION);
+    // String resolution = RegexUtil.findStrByPattern(entity.getVideo0Title(), RESOLUTION);
+    String resolution = entity.getVideo0Title(); //获取全部信息， 不需要正则匹配
     if (StringUtils.hasText(resolution)) {
       return resolution + " ";
     }
@@ -218,11 +226,11 @@ public class WeixinMPDraftService {
     if (CollectionUtils.isEmpty(extra4ArticleContent.getActorList())) {
       return;
     }
-    articleContent.append("<strong>演职人员(滑动查看):</strong><br><br>");
-    articleContent.append("<div style=\"overflow-x: auto; white-space: nowrap;\">");
-    String actorImage = "<div style=\"display: inline-block; vertical-align: top; text-align: center; padding: 10px; width: 120px; white-space: normal;\"><img src=\"%s\" alt=\"%s\" style=\"width: 100px; height: 100px;\"><p style=\"font-size: 10px;\">%s<br>饰演: %s</p></div>";
+    articleContent.append("<strong>演职人员 (滑动查看):</strong><br>");
+    articleContent.append("<section style=\"overflow-x: auto; white-space: nowrap;\">");
+    String actorImage = "<section style=\"display: inline-block; vertical-align: top; text-align: center; padding: 10px; width: 120px; white-space: normal;\"><img src=\"%s\" alt=\"%s\" style=\"width: 100px; height: 100px;\"><p style=\"font-size: 10px;\">%s<br>饰演: %s</p></section>";
     extra4ArticleContent.getActorList().forEach(a -> articleContent.append(String.format(actorImage, a.getImageUrl(), a.getName(), a.getName(), a.getRole())));
-    articleContent.append("</div><br>");
+    articleContent.append("</section><br>");
   }
 
   private void fetchExtra4ArticleContent (JellyfinWebhookEntity entity, StringBuilder articleContent) {
@@ -231,7 +239,7 @@ public class WeixinMPDraftService {
       return;
     }
     if (StringUtils.hasText(extra4ArticleContent.getOfficialRating())) {
-      articleContent.append("[").append(extra4ArticleContent.getOfficialRating()).append("]").append(" ");
+      articleContent.append("<em style=\"font-size: 16px;\">[").append(extra4ArticleContent.getOfficialRating()).append("]</em>").append(" ");
     }
     if (null != extra4ArticleContent.getCommunityRating() && !BigDecimal.ZERO.equals(extra4ArticleContent.getCommunityRating())) {
       articleContent.append("⭐️").append(extra4ArticleContent.getCommunityRating());

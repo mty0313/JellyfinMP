@@ -37,6 +37,7 @@ public class JellyfinWebhookEntity {
    */
   @JsonProperty("Name")
   private String name;
+
   /**
    * 简介
    */

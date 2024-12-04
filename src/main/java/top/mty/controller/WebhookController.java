@@ -25,7 +25,7 @@ public class WebhookController {
   @RequestMapping("/jellyfin")
   public R<String> jellyfin(HttpServletRequest request) {
     String bodyString = HttpUtil.getBodyString(request);
-    log.debug(bodyString);
+    log.debug("Webhook_Request_Body: {}",bodyString);
     JellyfinWebhookProperties properties = JSON.to(JellyfinWebhookProperties.class, bodyString);
     if (null == properties) {
       log.warn("Jellyfin Webhook接收转换异常");
